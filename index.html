@@ -76,21 +76,49 @@ function go(n){
 let musicStarted=false;
 function startBackgroundMusic(){
   const m=document.getElementById('bgMusic');
-  if(!m.src){m.src=CONFIG.musicFile; m.load();}
-  m.volume=.42;
-  const attempt=m.play();
-  if(attempt && typeof attempt.then==='function'){
-    attempt.then(()=>{musicStarted=true;}).catch(err=>{
-      console.warn('Musik belum dapat diputar. Pastikan musik-romantis.mp3 tersedia di folder aplikasi.',err);
-    });
+  // Gunakan alamat penuh berdasarkan lokasi index.html di GitHub Pages.
+  const musicUrl=new URL(CONFIG.musicFile, document.baseURI).href;
+  if(m.getAttribute('src')!==musicUrl){
+    m.src=musicUrl;
+    m.load();
+  }
+  m.loop=true;
+  m.volume=0.65;
+
+  // Panggil play() langsung dari event klik pengguna (Buka hadiahmu).
+  try{
+    const attempt=m.play();
+    if(attempt && typeof attempt.then==='function'){
+      attempt.then(()=>{
+        musicStarted=true;
+        console.info('Musik ulang tahun sedang diputar.');
+      }).catch(err=>{
+        musicStarted=false;
+        console.error('Pemutaran musik gagal:', {
+          file: musicUrl,
+          error: err && err.name,
+          message: err && err.message
+        });
+      });
+    }
+  }catch(err){
+    musicStarted=false;
+    console.error('Tidak dapat memulai musik:',err);
   }
 }
 function beginGiftJourney(){
-  // Dipanggil langsung dari klik pengguna agar browser mengizinkan audio.
+  // Pemutaran dimulai langsung dari klik pengguna agar sesuai aturan browser.
   startBackgroundMusic();
   go(1);
 }
-function openGift(){const g=document.getElementById('gift');if(g.classList.contains('open'))return;startBackgroundMusic();g.classList.add('open');document.getElementById('giftHint').textContent='Hadiah ini dibungkus dengan seluruh cintaku…';setTimeout(()=>{go(2);flowerHearts(20)},1000);} 
+function openGift(){
+  const g=document.getElementById('gift');
+  if(g.classList.contains('open'))return;
+  startBackgroundMusic();
+  g.classList.add('open');
+  document.getElementById('giftHint').textContent='Hadiah ini dibungkus dengan seluruh cintaku…';
+  setTimeout(()=>{go(2);flowerHearts(20)},1000);
+} 
 
 document.getElementById('gift').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openGift()}});
 function buildGallery(){
@@ -121,7 +149,12 @@ function confetti(count){const colors=['#d88b9b','#e8c49a','#f4d7d9','#c99b62','
 function flowerHearts(count){const root=document.getElementById('heartRain');for(let i=0;i<count;i++){const h=document.createElement('span');h.className='heart';h.textContent=['♡','♥','✿','❀'][Math.floor(Math.random()*4)];h.style.left=Math.random()*100+'%';h.style.fontSize=(14+Math.random()*24)+'px';h.style.animationDuration=(4+Math.random()*5)+'s';h.style.animationDelay=Math.random()*1.5+'s';root.appendChild(h);setTimeout(()=>h.remove(),10000);}}
 function celebrate(){confetti(140);flowerHearts(40);}
 const backgroundMusic=document.getElementById('bgMusic');
-backgroundMusic.src=CONFIG.musicFile;
-backgroundMusic.addEventListener('error',()=>console.warn('File musik tidak ditemukan:',CONFIG.musicFile));
+backgroundMusic.src=new URL(CONFIG.musicFile, document.baseURI).href;
+backgroundMusic.loop=true;
+backgroundMusic.preload='auto';
+backgroundMusic.addEventListener('error',()=>{
+  console.error('File musik gagal dimuat:', backgroundMusic.currentSrc || backgroundMusic.src,
+    'Kode media:', backgroundMusic.error ? backgroundMusic.error.code : 'tidak diketahui');
+});
 setNames();buildGallery();buildFinalMedia();buildReasons();document.getElementById('letterText').textContent='Tekan “Baca suratku” untuk membaca pesan yang kutulis khusus untukmu…';
 </script></body></html>
