@@ -138,7 +138,34 @@ function buildFinalMedia(){
   if(CONFIG.finalPhoto){const img=document.createElement('img');img.src=CONFIG.finalPhoto;img.alt='Foto kenangan kita';img.onerror=()=>{photoBox.innerHTML='♡';};photoBox.innerHTML='';photoBox.appendChild(img);}
   const area=document.getElementById('finalMedia');
   if(CONFIG.voiceFile){const audio=document.createElement('audio');audio.src=CONFIG.voiceFile;audio.controls=true;audio.preload='metadata';audio.setAttribute('aria-label','Pesan suara dari suami');audio.style.cssText='max-width:100%;margin:10px auto';area.appendChild(audio);}
-  if(CONFIG.videoFile){const video=document.createElement('video');video.src=CONFIG.videoFile;video.controls=true;video.playsInline=true;video.preload='metadata';video.style.cssText='width:min(560px,100%);border-radius:18px;margin:12px auto';area.appendChild(video);}
+  if(CONFIG.videoFile){
+    const video=document.createElement('video');
+    video.src=CONFIG.videoFile;
+    video.controls=true;
+    video.playsInline=true;
+    video.preload='metadata';
+    video.style.cssText='width:min(560px,100%);border-radius:18px;margin:12px auto';
+
+    // Hentikan musik latar selama video diputar, lalu lanjutkan dari posisi terakhir.
+    let resumeMusicAfterVideo=false;
+    video.addEventListener('play',()=>{
+      const background=document.getElementById('bgMusic');
+      if(!background.paused && !background.ended) resumeMusicAfterVideo=true;
+      background.pause();
+    });
+    video.addEventListener('ended',()=>{
+      const background=document.getElementById('bgMusic');
+      if(resumeMusicAfterVideo){
+        const playback=background.play();
+        if(playback && typeof playback.catch==='function'){
+          playback.catch(err=>console.warn('Musik latar belum dapat dilanjutkan:',err));
+        }
+      }
+      resumeMusicAfterVideo=false;
+    });
+
+    area.appendChild(video);
+  }
   if(!area.children.length) area.remove();
 }
 function buildReasons(){const el=document.getElementById('reasons');allReasons.forEach((reason,i)=>{const b=document.createElement('button');b.className='reason';b.innerHTML=`<span>♡</span>Alasan ${i+1}`;b.setAttribute('aria-label','Buka alasan '+(i+1));b.onclick=()=>{if(b.classList.contains('open'))return;b.classList.add('open');b.innerHTML=`<span>${i+1} / 100</span>${escapeHtml(reason)}`;opened.add(i);document.getElementById('reasonCount').textContent=opened.size+' dari 100 alasan telah dibuka ♡';document.getElementById('reasonProgress').style.width=opened.size+'%';};el.appendChild(b);});}
