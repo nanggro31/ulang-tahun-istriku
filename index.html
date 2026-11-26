@@ -137,7 +137,30 @@ function buildFinalMedia(){
   const photoBox=document.getElementById('finalPhoto');
   if(CONFIG.finalPhoto){const img=document.createElement('img');img.src=CONFIG.finalPhoto;img.alt='Foto kenangan kita';img.onerror=()=>{photoBox.innerHTML='♡';};photoBox.innerHTML='';photoBox.appendChild(img);}
   const area=document.getElementById('finalMedia');
-  if(CONFIG.voiceFile){const audio=document.createElement('audio');audio.src=CONFIG.voiceFile;audio.controls=true;audio.preload='metadata';audio.setAttribute('aria-label','Pesan suara dari suami');audio.style.cssText='max-width:100%;margin:10px auto';area.appendChild(audio);}
+  if(CONFIG.voiceFile){
+    const audio=document.createElement('audio');
+    audio.src=CONFIG.voiceFile;
+    audio.controls=true;
+    audio.preload='metadata';
+    audio.setAttribute('aria-label','Pesan suara dari suami');
+    audio.style.cssText='max-width:100%;margin:10px auto';
+
+    // Kecilkan musik romantis saat pesan suara diputar agar suara lebih jelas.
+    const background=document.getElementById('bgMusic');
+    const normalMusicVolume=0.65;
+    const voiceMusicVolume=0.12;
+    audio.addEventListener('play',()=>{
+      background.volume=voiceMusicVolume;
+    });
+    const restoreMusicVolume=()=>{
+      background.volume=normalMusicVolume;
+    };
+    audio.addEventListener('pause',restoreMusicVolume);
+    audio.addEventListener('ended',restoreMusicVolume);
+    audio.addEventListener('error',restoreMusicVolume);
+
+    area.appendChild(audio);
+  }
   if(CONFIG.videoFile){
     const video=document.createElement('video');
     video.src=CONFIG.videoFile;
