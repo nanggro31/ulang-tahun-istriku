@@ -63,7 +63,7 @@ const REASONS=[
 // 50 alasan dasar di atas dilengkapi variasi personal yang tetap romantis hingga 100 kartu.
 const EXTRA=['Karena kamu selalu punya tempat di hatiku.','Karena aku suka berbagi rahasia denganmu.','Karena kamu membuatku merasa tenang.','Karena kita punya kenangan yang hanya kita pahami.','Karena kamu teman terbaik untuk segala rencana.','Karena aku suka berjalan di sampingmu.','Karena kamu membuat hari biasa jadi kenangan.','Karena kamu menghargai kebersamaan.','Karena aku suka mendengar pendapatmu.','Karena kamu mengingatkanku untuk bersyukur.','Karena kamu mengisi hidupku dengan kehangatan.','Karena kamu membuatku ingin pulang lebih cepat.','Karena kita bisa diam bersama tanpa canggung.','Karena kamu tahu kapan aku butuh dukungan.','Karena kamu membuat masa depan terasa indah.','Karena kamu selalu punya sisi yang membuatku kagum.','Karena kamu memberi cinta tanpa banyak tuntutan.','Karena kamu menjaga hal-hal yang kita bangun.','Karena kamu mengajariku melihat dari sisi lain.','Karena kamu membuatku merasa cukup.','Karena aku suka caramu menikmati hal kecil.','Karena kamu berusaha memahami diriku.','Karena kamu menyimpan banyak kebaikan.','Karena kamu adalah bagian dari setiap doaku.','Karena aku suka membuatmu tersenyum.','Karena kamu membuatku berani bermimpi.','Karena kamu menjadi sandaran yang hangat.','Karena kamu selalu punya tempat khusus di pikiranku.','Karena kamu mengubah banyak hari buruk menjadi baik.','Karena kamu memberi makna pada kata bersama.','Karena aku suka merencanakan hari esok denganmu.','Karena kamu membuatku ingin menjaga janji.','Karena kamu menghargai kejujuran.','Karena kamu membuatku merasa dicintai.','Karena kamu adalah anugerah dalam hidupku.','Karena kita saling melengkapi dengan cara kita.','Karena kamu membuatku tertawa pada diriku sendiri.','Karena kamu selalu layak mendapatkan yang terbaik.','Karena aku ingin mendukung semua impianmu.','Karena kamu membuatku belajar tentang pengertian.','Karena aku suka setiap versi dirimu.','Karena kamu tetap cantik saat tertawa lepas.','Karena aku suka momen kecil kita berdua.','Karena kamu membuat kenangan terasa hidup.','Karena kamu menambah alasan untuk bersyukur.','Karena aku ingin merayakan banyak ulang tahunmu.','Karena aku ingin menua sambil menggenggam tanganmu.','Karena setiap hari bersamamu adalah kesempatan baru.','Karena cintaku padamu terus bertumbuh.','Karena setelah semua alasan ini, jawabannya tetap: kamu.'];
 const allReasons=[...REASONS,...EXTRA];let opened=new Set(),letterTimer=null,letterStarted=false,photoUrls=[];
-function setNames(){document.getElementById('wifeNameTitle').textContent='Istriku Tercinta Nurhaliza.';['wifeNameLetter','wifeNameFinal'].forEach(id=>document.getElementById(id).textContent=CONFIG.wifeName);document.getElementById('signature').innerHTML='Selalu mencintaimu,<br>'+escapeHtml(CONFIG.husbandName)+' ♡';document.getElementById('year').textContent=new Date().getFullYear();}
+function setNames(){document.getElementById('wifeNameTitle').textContent='♡ Istriku Tercinta Nurhaliza ♡';['wifeNameLetter','wifeNameFinal'].forEach(id=>document.getElementById(id).textContent=CONFIG.wifeName);document.getElementById('signature').innerHTML='Selalu mencintaimu,<br>'+escapeHtml(CONFIG.husbandName)+' ♡';document.getElementById('year').textContent=new Date().getFullYear();}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function go(n){
   document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
@@ -137,30 +137,7 @@ function buildFinalMedia(){
   const photoBox=document.getElementById('finalPhoto');
   if(CONFIG.finalPhoto){const img=document.createElement('img');img.src=CONFIG.finalPhoto;img.alt='Foto kenangan kita';img.onerror=()=>{photoBox.innerHTML='♡';};photoBox.innerHTML='';photoBox.appendChild(img);}
   const area=document.getElementById('finalMedia');
-  if(CONFIG.voiceFile){
-    const audio=document.createElement('audio');
-    audio.src=CONFIG.voiceFile;
-    audio.controls=true;
-    audio.preload='metadata';
-    audio.setAttribute('aria-label','Pesan suara dari suami');
-    audio.style.cssText='max-width:100%;margin:10px auto';
-
-    // Kecilkan musik romantis saat pesan suara diputar agar suara lebih jelas.
-    const background=document.getElementById('bgMusic');
-    const normalMusicVolume=0.65;
-    const voiceMusicVolume=0.12;
-    audio.addEventListener('play',()=>{
-      background.volume=voiceMusicVolume;
-    });
-    const restoreMusicVolume=()=>{
-      background.volume=normalMusicVolume;
-    };
-    audio.addEventListener('pause',restoreMusicVolume);
-    audio.addEventListener('ended',restoreMusicVolume);
-    audio.addEventListener('error',restoreMusicVolume);
-
-    area.appendChild(audio);
-  }
+  if(CONFIG.voiceFile){const audio=document.createElement('audio');audio.src=CONFIG.voiceFile;audio.controls=true;audio.preload='metadata';audio.setAttribute('aria-label','Pesan suara dari suami');audio.style.cssText='max-width:100%;margin:10px auto';area.appendChild(audio);}
   if(CONFIG.videoFile){
     const video=document.createElement('video');
     video.src=CONFIG.videoFile;
